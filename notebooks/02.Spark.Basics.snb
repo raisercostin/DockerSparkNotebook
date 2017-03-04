@@ -1,0 +1,555 @@
+{
+  "metadata" : {
+    "name" : "Spark Basics",
+    "user_save_timestamp" : "1970-01-01T00:00:00.000Z",
+    "auto_save_timestamp" : "1970-01-01T00:00:00.000Z",
+    "language_info" : {
+      "name" : "scala",
+      "file_extension" : "scala",
+      "codemirror_mode" : "text/x-scala"
+    },
+    "trusted" : true,
+    "customLocalRepo" : null,
+    "customRepos" : null,
+    "customDeps" : null,
+    "customImports" : null,
+    "customArgs" : null,
+    "customSparkConf" : null
+  },
+  "cells" : [ {
+    "metadata" : {
+      "id" : "DDB90329FC284E9D80EF42FA267E6D00"
+    },
+    "cell_type" : "markdown",
+    "source" : "### Spark Basics: DataFrames and DataSets"
+  }, {
+    "metadata" : {
+      "id" : "C7896999DA2C4E6E86B5345E98926B5A"
+    },
+    "cell_type" : "markdown",
+    "source" : "There are three different kinds of data modeling primitives that you can use in a Spark application to keep track of transparently distributed collections:  \n* RDDs (too low-level to be usable, they are the moral equivalent of assembly language)  \n* DataFrames (conceptually inspired by PyData / Pandas, available in Scala and Python)\n* DataSets (compile-time type-safe DataFrames, available in Scala but not in Python)"
+  }, {
+    "metadata" : {
+      "id" : "BACB3A90518E448CB946BAE436E10503"
+    },
+    "cell_type" : "markdown",
+    "source" : "To exemplify a use case for DataFrames and DataSets, the first thing we are going to do is to define some input data by hand."
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "76AF2B989D474655A69023363225E150"
+    },
+    "cell_type" : "code",
+    "source" : "val rawData: String = \"b,9\\nb,3\\na,8\\nb,2\\na,5\\na,7\\na,9\\nb,1\"",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "D0C59C699E7B4B7A9B56B623F5930011"
+    },
+    "cell_type" : "code",
+    "source" : "val dataAfterSplit = rawData.split(\"\\n\")",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "C5C011457C124BB288B0334806A5B9F2"
+    },
+    "cell_type" : "code",
+    "source" : "dataAfterSplit(0)",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "id" : "E80C66237AE9486E827F074F380C8506"
+    },
+    "cell_type" : "markdown",
+    "source" : "You'll notice that each record consists of a text key and a numeric value separated by a comma.  \nNext, we define a case class to represent this type of data record."
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "BB0E4BBC5E4145599BA66214F1E975FD"
+    },
+    "cell_type" : "code",
+    "source" : "case class DataRecord(key: String, value: Int)",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "id" : "C55FD23B4B2D4912974B1D6D294C1525"
+    },
+    "cell_type" : "markdown",
+    "source" : "We also define a function to parse our raw CSV records into type-safe **`DataRecord`**s."
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "0C9CB55FE51D46E382F3F03C98939860"
+    },
+    "cell_type" : "code",
+    "source" : "def parseIntoDataRecord(s: String): DataRecord = {\n  val afterSplit = s.split(\",\")\n  DataRecord( afterSplit(0), afterSplit(1).toInt )\n}",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "id" : "C51F7FA8211A44F18D28C319A5E44A84"
+    },
+    "cell_type" : "markdown",
+    "source" : "Next, we create first a **`DataFrame`** and then a **`DataSet`** based on our data."
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "44F63CBA4F7642F98CFFF2C68FAB8716"
+    },
+    "cell_type" : "code",
+    "source" : "val myFirstDataFrame = sparkSession.createDataFrame( dataAfterSplit.map( parseIntoDataRecord(_) ) )",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "44F63CBA4F7642F98CFFF2C68FAB8716"
+    },
+    "cell_type" : "code",
+    "source" : "val myFirstDataSet = myFirstDataFrame.as[DataRecord]",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "id" : "9EF577D7E3F94262B6520771F67CE8C3"
+    },
+    "cell_type" : "markdown",
+    "source" : "The data is now in distributed form across the Spark cluster, let's have a look at it."
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "D070F1331C404072857499E793EA6E0B"
+    },
+    "cell_type" : "code",
+    "source" : "myFirstDataSet",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "id" : "FF6AECEA66C14C9481F1E755A6698349"
+    },
+    "cell_type" : "markdown",
+    "source" : "We can now work with our data using Spark SQL, which is a SQL-2003 compliant language.  \nAll we have to do is attach a table name to our **`DataSet`**."
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "9D5730ABE0C343FF8E92007CC5DEC70E"
+    },
+    "cell_type" : "code",
+    "source" : "myFirstDataSet.createOrReplaceTempView(\"raw_data\")\n\nprintln(\"Done.\")",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : true,
+      "id" : "E0C1A3EF83A149439D4CEC6F13D5940A"
+    },
+    "cell_type" : "code",
+    "source" : "sparkSession.sql(\"SELECT key, SUM(value) AS sum_value FROM raw_data GROUP BY key ORDER BY key\").show",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : true,
+      "id" : "E0C1A3EF83A149439D4CEC6F13D5940A"
+    },
+    "cell_type" : "code",
+    "source" : "val aggregatedDataFrame = sparkSession.sql(\"SELECT key, SUM(value) AS sum_value FROM raw_data GROUP BY key ORDER BY key\")",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "A3457856EF3041B584A6F474AC75E970"
+    },
+    "cell_type" : "code",
+    "source" : "val filteredDataFrame = sparkSession.sql(\"SELECT * FROM raw_data WHERE value < 7\")",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "97FCA97AA0344785BD8500FCF9F9B9BD"
+    },
+    "cell_type" : "code",
+    "source" : "filteredDataFrame",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "id" : "4BD088467C8344628327716D5E7F33B7"
+    },
+    "cell_type" : "markdown",
+    "source" : "#### Saving to persistent tables"
+  }, {
+    "metadata" : {
+      "id" : "DBD58190D5FB4CD48C7CEFD73560A6DC"
+    },
+    "cell_type" : "markdown",
+    "source" : "Saving to a persistent table means materializing the contents of the DataFrame and creating a pointer to the data in the Hive metastore.  \nThis means that the data is saved to a Hive table and the table is registered in the Hive metastore, which means that the table is managed by Hive."
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : true,
+      "id" : "689A0460278340979FE5AA2A6E281DC5"
+    },
+    "cell_type" : "code",
+    "source" : "filteredDataFrame.write.mode(\"overwrite\").saveAsTable(\"filtered_data\")",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "id" : "3501B544E940472FA49648FD0A84E5F7"
+    },
+    "cell_type" : "markdown",
+    "source" : "Later on, when we need this data again, we extract data back out from a Hive table into a different DataFrame."
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : true,
+      "id" : "0C5DEDB0A5F34D93BA2C9DBF0FA2A194"
+    },
+    "cell_type" : "code",
+    "source" : "val filteredData = sparkSession.table(\"filtered_data\")",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : true,
+      "id" : "82CFC3A0AC1F4CD1BBF805271736B765"
+    },
+    "cell_type" : "code",
+    "source" : "filteredData",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "id" : "FD338E4DABD7447A984913EE85AE677B"
+    },
+    "cell_type" : "markdown",
+    "source" : "#### The Catalog"
+  }, {
+    "metadata" : {
+      "id" : "08EF8ED30D1745B28146DE3AA52F665C"
+    },
+    "cell_type" : "markdown",
+    "source" : "The catalog is an interface through which we can inspect temp tables as well as Hive-managed tables."
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : true,
+      "id" : "FB58E1FB782E4E37ACF01E2DF054B88C"
+    },
+    "cell_type" : "code",
+    "source" : "val c = sparkSession.catalog",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : true,
+      "id" : "E0F4BF71A48F4EC08C1A80CA875E8F85"
+    },
+    "cell_type" : "code",
+    "source" : "c.listTables.show",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "id" : "44CB275BCC0C4BDB891F69356D4923DE"
+    },
+    "cell_type" : "markdown",
+    "source" : "#### User Defined Functions (UDFs)"
+  }, {
+    "metadata" : {
+      "id" : "CE224D287CB44EC5AA226EB33A70FC76"
+    },
+    "cell_type" : "markdown",
+    "source" : "User-Defined Functions (UDFs) is a feature of Spark SQL to define new column-based functions.  \nUDFs are very effective because they can be materialized anywhere in the cluster, so the function can be at the same physical location as the data, this makes operating on data using UDFs very efficient."
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "2E55962365E84C02937197C91E897566"
+    },
+    "cell_type" : "code",
+    "source" : "// First we define a Scala function\ndef upCaseSqBr(inputStr: String): String = s\"[${inputStr.toUpperCase}]\"\n\nprintln( upCaseSqBr(\"abc\") )",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "9D23502E9CD544C88CC9A8420E0D3CA4"
+    },
+    "cell_type" : "code",
+    "source" : "// Then we register its alias in Spark SQL\nsparkSession.udf.register( \"upCaseSqBrUDF\", upCaseSqBr _ )",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "41277640E8CA4E6F8DF7C06000AD1A11"
+    },
+    "cell_type" : "code",
+    "source" : "val dataFrameAfterUDF = sparkSession.sql(\"SELECT upCaseSqBrUDF(key) AS up_case_sq_br, value FROM raw_data\")",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "47911BD5416143F2BC418916CAD6D80B"
+    },
+    "cell_type" : "code",
+    "source" : "dataFrameAfterUDF",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "id" : "BF7C72E54455478D987E38D18CCC1105"
+    },
+    "cell_type" : "markdown",
+    "source" : "A more realistic example of a UDF is one that generates a UUID."
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "370DD36C00154E968305433327279A25"
+    },
+    "cell_type" : "code",
+    "source" : "import java.util.UUID\nsparkSession.udf.register(\"uuid\", () => UUID.randomUUID.toString)",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "B3BBCB40DDCD492C86C8094E2DD38A2E"
+    },
+    "cell_type" : "code",
+    "source" : "val dataFrameWithUUID = sparkSession.sql(\"SELECT uuid() AS uuid, * FROM raw_data\")",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "3F7B63EFD4E54AA98690DF01B4ED17CA"
+    },
+    "cell_type" : "code",
+    "source" : "dataFrameWithUUID",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "id" : "E06C50A4A1E94C80836C3B0D4DFDD7A8"
+    },
+    "cell_type" : "markdown",
+    "source" : "#### Joining Two DataSets"
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "83AEF9156C054E90801B945831FFB105"
+    },
+    "cell_type" : "code",
+    "source" : ":sh head -5 /opt/SparkDatasets/geography/cities.csv",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "83AEF9156C054E90801B945831FFB105"
+    },
+    "cell_type" : "code",
+    "source" : ":sh cat /opt/SparkDatasets/geography/cities_header.csv",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "AA0136F2F233423BBFD827FE64264021"
+    },
+    "cell_type" : "code",
+    "source" : "case class City (city_id: Long, country_id: Long, city_name: String)",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "83AEF9156C054E90801B945831FFB105"
+    },
+    "cell_type" : "code",
+    "source" : ":sh head -5 /opt/SparkDatasets/geography/countries.csv",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "83AEF9156C054E90801B945831FFB105"
+    },
+    "cell_type" : "code",
+    "source" : ":sh cat /opt/SparkDatasets/geography/countries_header.csv",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "C7B476C18049456D8C58FB86E37DFE71"
+    },
+    "cell_type" : "code",
+    "source" : "case class Country (country_id: Long, continent_id: Long, country_name: String)",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "543C1675BF194E77868F48603246A550"
+    },
+    "cell_type" : "code",
+    "source" : "val citySchema = Encoders.product[City].schema",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "543C1675BF194E77868F48603246A550"
+    },
+    "cell_type" : "code",
+    "source" : "val countrySchema = Encoders.product[Country].schema",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "5FAEB99967BC458388F384CA0F4E03F9"
+    },
+    "cell_type" : "code",
+    "source" : "val citiesDS = sparkSession.read.schema(citySchema).csv(\"/opt/SparkDatasets/geography/cities.csv\").as[City]\ncitiesDS.createOrReplaceTempView(\"cities\")",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "5FAEB99967BC458388F384CA0F4E03F9"
+    },
+    "cell_type" : "code",
+    "source" : "val countriesDS = sparkSession.read.schema(countrySchema).csv(\"/opt/SparkDatasets/geography/countries.csv\").as[Country]\ncountriesDS.createOrReplaceTempView(\"countries\")",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "9569C6104B80449BB20CCBEC98EF008F"
+    },
+    "cell_type" : "code",
+    "source" : "sparkSession.sql(\"SELECT countries.country_name, cities.city_name FROM cities INNER JOIN countries ON cities.country_id = countries.country_id\")",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "id" : "099A4F8C553846318A49786DC0B1C6A8"
+    },
+    "cell_type" : "markdown",
+    "source" : "#### Exercise"
+  }, {
+    "metadata" : {
+      "id" : "8F5F993172774D0384DD566761C24FBA"
+    },
+    "cell_type" : "markdown",
+    "source" : "Given the population data below, and the assumption that zip codes which are close to each other geographically are also close to each other numerically, compute the top 10 list of the most densely populated \"pockets\" of zip codes, along with the U.S. state they are in.  \nEverything should be type-safe, therefore do use DataSets.  \n(Hint: You will need to define a UDF that truncates the 5-digit zip code to 4 digits to find its corresponding pocket.)"
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "23C62C362D3B46728BD2984C6A46BB92"
+    },
+    "cell_type" : "code",
+    "source" : ":sh head -5 /opt/SparkDatasets/zipcodes/zips.json",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "630D2D678F0E4F8C9EBD9FCA1880112C"
+    },
+    "cell_type" : "code",
+    "source" : "sparkSession.read.json(\"/opt/SparkDatasets/zipcodes/zips.json\").printSchema",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : true,
+      "id" : "73170BDF765D46F584B03F312F41168C"
+    },
+    "cell_type" : "code",
+    "source" : "// Define the case class here",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : true,
+      "id" : "B377C1F5538C41379C91F98E7C62388B"
+    },
+    "cell_type" : "code",
+    "source" : "// Define the schema here",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : true,
+      "id" : "B377C1F5538C41379C91F98E7C62388B"
+    },
+    "cell_type" : "code",
+    "source" : "// Define the temp view here",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : true,
+      "id" : "49C8D7BF99CC47A8ACE20FE92DEBB92E"
+    },
+    "cell_type" : "code",
+    "source" : "// Write the SQL statement here",
+    "outputs" : [ ]
+  } ],
+  "nbformat" : 4
+}

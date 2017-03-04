@@ -1,0 +1,81 @@
+{
+  "metadata" : {
+    "name" : "Saving To Cassandra",
+    "user_save_timestamp" : "1970-01-01T00:00:00.000Z",
+    "auto_save_timestamp" : "1970-01-01T00:00:00.000Z",
+    "language_info" : {
+      "name" : "scala",
+      "file_extension" : "scala",
+      "codemirror_mode" : "text/x-scala"
+    },
+    "trusted" : true,
+    "customLocalRepo" : null,
+    "customRepos" : null,
+    "customDeps" : null,
+    "customImports" : null,
+    "customArgs" : null,
+    "customSparkConf" : null
+  },
+  "cells" : [ {
+    "metadata" : {
+      "id" : "43739350E8F448AB98D0B359B3B2A685"
+    },
+    "cell_type" : "markdown",
+    "source" : "#### Writing a DataFrame / DataSet to Cassandra"
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "presentation" : {
+        "tabs_state" : "{\n  \"tab_id\": \"#tab1165223338-0\"\n}",
+        "pivot_chart_state" : "{\n  \"hiddenAttributes\": [],\n  \"menuLimit\": 200,\n  \"cols\": [],\n  \"rows\": [],\n  \"vals\": [],\n  \"exclusions\": {},\n  \"inclusions\": {},\n  \"unusedAttrsVertical\": 85,\n  \"autoSortUnusedAttrs\": false,\n  \"inclusionsInfo\": {},\n  \"aggregatorName\": \"Count\",\n  \"rendererName\": \"Table\"\n}"
+      },
+      "id" : "EA56011E34714A7B8F7476159E45E522"
+    },
+    "cell_type" : "code",
+    "source" : ":cp /opt/docker/lib/spark-cassandra-connector.jar",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "8E5EE59BBD534DCBB37E5CFE3BE3D078"
+    },
+    "cell_type" : "code",
+    "source" : "import scala.util.Try",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "7D39402557D34380B7470BB14DE02CC0"
+    },
+    "cell_type" : "code",
+    "source" : "case class Country (country_id: Long, continent_id: Long, country_name: String)",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "155878387C8A4FB58BA1B540BC3D157F"
+    },
+    "cell_type" : "code",
+    "source" : "Try(sparkSession.stop)\n\nval CASSANDRA_HOST = \"192.168.0.1\"\n\nval spark =\n  SparkSession\n    .builder\n    .master(\"local[*]\")\n    .config(\"spark.cassandra.connection.host\", CASSANDRA_HOST)\n    .getOrCreate\n\nval countrySchema = Encoders.product[Country].schema\n\nval countriesDS = spark.read.schema(countrySchema).csv(\"/opt/SparkDatasets/geography/countries.csv\").as[Country]",
+    "outputs" : [ ]
+  }, {
+    "metadata" : {
+      "trusted" : true,
+      "input_collapsed" : false,
+      "collapsed" : false,
+      "id" : "155878387C8A4FB58BA1B540BC3D157F"
+    },
+    "cell_type" : "code",
+    "source" : "countriesDS\n  .write\n  .format(\"org.apache.spark.sql.cassandra\")\n  .options( Map(\"keyspace\" -> \"spark_ks\", \"table\" -> \"spark_countries\") )\n  .save",
+    "outputs" : [ ]
+  } ],
+  "nbformat" : 4
+}
