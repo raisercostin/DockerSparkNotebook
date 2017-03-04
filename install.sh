@@ -18,6 +18,6 @@ wget -qO /opt/docker/lib/spark-cassandra-connector.jar \
 echo 'Downloading SparkNotebooks ...'
 cd /opt
 git clone https://github.com/dserban/DockerSparkNotebook
-git clone https://github.com/dserban/SparkDatasets.git
+git clone https://github.com/dserban/SparkDatasets
 echo 'Building container, this may take a while ...'
 
