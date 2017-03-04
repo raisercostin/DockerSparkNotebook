@@ -17,6 +17,7 @@ wget -qO /opt/docker/lib/spark-cassandra-connector.jar \
          https://repo1.maven.org/maven2/com/datastax/spark/spark-cassandra-connector_2.11/2.0.0-RC1/spark-cassandra-connector_2.11-2.0.0-RC1.jar
 echo 'Downloading SparkNotebooks ...'
 cd /opt
-git clone https://github.com/dserban/SparkNotebooks
+git clone https://github.com/dserban/DockerSparkNotebook
+git clone https://github.com/dserban/SparkDatasets.git
 echo 'Building container, this may take a while ...'
 
