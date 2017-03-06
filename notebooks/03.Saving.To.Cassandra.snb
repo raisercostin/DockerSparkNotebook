@@ -24,11 +24,17 @@
     "source" : "#### Writing a DataFrame / DataSet to Cassandra"
   }, {
     "metadata" : {
+      "id" : "E3C025B3871A49418A48B652DF2DFBC7"
+    },
+    "cell_type" : "markdown",
+    "source" : "We need to add extra JARs to the classpath to make this work."
+  }, {
+    "metadata" : {
       "trusted" : true,
       "input_collapsed" : false,
       "collapsed" : false,
       "presentation" : {
-        "tabs_state" : "{\n  \"tab_id\": \"#tab1949138700-0\"\n}",
+        "tabs_state" : "{\n  \"tab_id\": \"#tab1259234090-0\"\n}",
         "pivot_chart_state" : "{\n  \"hiddenAttributes\": [],\n  \"menuLimit\": 200,\n  \"cols\": [],\n  \"rows\": [],\n  \"vals\": [],\n  \"exclusions\": {},\n  \"inclusions\": {},\n  \"unusedAttrsVertical\": 85,\n  \"autoSortUnusedAttrs\": false,\n  \"inclusionsInfo\": {},\n  \"aggregatorName\": \"Count\",\n  \"rendererName\": \"Table\"\n}"
       },
       "id" : "EA56011E34714A7B8F7476159E45E522"
@@ -61,7 +67,7 @@
       "id" : "8E92D27D005F42C5843CAB5D0B8C81BD"
     },
     "cell_type" : "markdown",
-    "source" : "#### Cassandra Schema Definition"
+    "source" : "For reference, here are the Cassandra definitions we are going to need further down below."
   }, {
     "metadata" : {
       "id" : "C358970F4B5C4C31BFC43878A629D6A1"
@@ -73,7 +79,7 @@
       "id" : "7383283491204D6A80D4CBFDBA538049"
     },
     "cell_type" : "markdown",
-    "source" : "#### Configuring The Cassandra Host Name In The Spark Application"
+    "source" : "Here we are configuring the Cassandra host name in the Spark application."
   }, {
     "metadata" : {
       "trusted" : true,
@@ -86,13 +92,19 @@
     "outputs" : [ ]
   }, {
     "metadata" : {
+      "id" : "F30A723EC0984AF3B862638D3EAE8C11"
+    },
+    "cell_type" : "markdown",
+    "source" : "Finally, here we are saving the data into Cassandra."
+  }, {
+    "metadata" : {
       "trusted" : true,
       "input_collapsed" : false,
       "collapsed" : false,
       "id" : "155878387C8A4FB58BA1B540BC3D157F"
     },
     "cell_type" : "code",
-    "source" : "countriesDS\n  .write\n  .format(\"org.apache.spark.sql.cassandra\")\n  .mode(SaveMode.Overwrite)\n  .options( Map(\"keyspace\" -> \"spark_ks\", \"table\" -> \"spark_countries\") )\n  .save",
+    "source" : "countriesDS\n  .write\n  .format(\"org.apache.spark.sql.cassandra\")\n  .mode(SaveMode.Append)\n  .options( Map(\"keyspace\" -> \"spark_ks\", \"table\" -> \"spark_countries\") )\n  .save",
     "outputs" : [ ]
   }, {
     "metadata" : {
@@ -102,7 +114,7 @@
       "id" : "141D0AACF03341408FDFFB4468D38EF8"
     },
     "cell_type" : "code",
-    "source" : "val GH: String = \"github_id_goes_here\"",
+    "source" : "val GH: String = \"your_github_id_goes_here\"",
     "outputs" : [ ]
   }, {
     "metadata" : {
@@ -122,7 +134,7 @@
       "id" : "A3A6DF32B34B4EC0969BB627D9AAA251"
     },
     "cell_type" : "code",
-    "source" : "countriesDS\n  .withColumn(\"github_id\", lit(GH))\n  .write\n  .format(\"org.apache.spark.sql.cassandra\")\n  .mode(SaveMode.Overwrite)\n  .options( Map(\"keyspace\" -> \"spark_ks\", \"table\" -> \"spark_countries_with_github_id\") )\n  .save",
+    "source" : "countriesDS\n  .withColumn(\"github_id\", lit(GH))\n  .write\n  .format(\"org.apache.spark.sql.cassandra\")\n  .mode(SaveMode.Append)\n  .options( Map(\"keyspace\" -> \"spark_ks\", \"table\" -> \"spark_countries_with_github_id\") )\n  .save",
     "outputs" : [ ]
   } ],
   "nbformat" : 4
