@@ -1,4 +1,4 @@
-FROM andypetrella/spark-notebook:0.7.0-scala-2.11.8-spark-2.1.0-hadoop-2.7.3-with-hive
+FROM andypetrella/spark-notebook:0.7.0-scala-2.11.8-spark-2.1.1-hadoop-2.7.2-with-hive
 
 COPY install.sh /usr/bin/install.sh
 
