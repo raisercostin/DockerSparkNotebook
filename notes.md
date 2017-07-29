@@ -1,3 +1,3 @@
 ```
-https://dserban.github.io/jars/opennlp-tools.jar
+wget https://dserban.github.io/jars/opennlp-tools.jar
 ```
