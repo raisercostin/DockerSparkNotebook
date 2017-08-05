@@ -13,6 +13,10 @@ tar -xf /opt/jdk.tgz -C /opt
 rm /opt/jdk.tgz
 mv /opt/jdk1.8.0_102 /opt/jdk
 mkdir /jars
+echo 'Downloading opennlp-tools ...'
+wget -qO /jars/opennlp-tools.jar https://dserban.github.io/jars/opennlp-tools.jar
+echo 'Downloading graphframes ...'
+wget -qO /jars/graphframes.jar https://dserban.github.io/jars/graphframes.jar
 echo 'Downloading Spark-Cassandra Connector ...'
 wget -qO /jars/spark-cassandra-connector.jar https://dserban.github.io/jars/spark-cassandra-connector.jar
 echo 'Downloading jsr166e ...'
