@@ -14,11 +14,9 @@ rm /opt/jdk.tgz
 mv /opt/jdk1.8.0_102 /opt/jdk
 mkdir /jars
 echo 'Downloading Spark-Cassandra Connector ...'
-wget -qO /jars/spark-cassandra-connector.jar \
-         https://repo1.maven.org/maven2/com/datastax/spark/spark-cassandra-connector_2.11/2.0.0-RC1/spark-cassandra-connector_2.11-2.0.0-RC1.jar
+wget -qO /jars/spark-cassandra-connector.jar https://dserban.github.io/jars/spark-cassandra-connector.jar
 echo 'Downloading jsr166e ...'
-wget -qO /jars/jsr166e.jar \
-         https://repo1.maven.org/maven2/com/twitter/jsr166e/1.1.0/jsr166e-1.1.0.jar
+wget -qO /jars/jsr166e.jar https://dserban.github.io/jars/jsr166e.jar
 echo 'Downloading DockerSparkNotebook/SparkDatasets ...'
 cd /opt
 git clone https://github.com/dserban/DockerSparkNotebook
