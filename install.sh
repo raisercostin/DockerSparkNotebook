@@ -11,7 +11,7 @@ wget --no-check-certificate --no-cookies                         \
 echo 'Extracting JDK ...'
 tar -xf /opt/jdk.tgz -C /opt
 rm /opt/jdk.tgz
-mv /opt/jdk1.8.0_102 /opt/jdk
+mv /opt/jdk* /opt/jdk
 mkdir /jars
 echo 'Downloading opennlp-tools ...'
 wget -qO /jars/opennlp-tools.jar https://dserban.github.io/jars/opennlp-tools.jar
