@@ -1,5 +1,6 @@
 export DEBIAN_FRONTEND=noninteractive
-apt-get -qqy purge openjdk-7-jdk openjdk-7-jre-headless
+apt-get -qqy purge \
+  openjdk-7-jdk openjdk-7-jre-headless openjdk-8-jdk openjdk-8-jdk-headless openjdk-8-jre openjdk-8-jre-headless
 apt-get -qq update
 apt-get -qqy install --no-install-recommends \
   wget curl git vim jq mc net-tools less ca-certificates build-essential
