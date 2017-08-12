@@ -1,7 +1,7 @@
 export DEBIAN_FRONTEND=noninteractive
 apt-get -qqy purge openjdk-7-jdk openjdk-7-jre-headless
 apt-get -qq update
-apt-get -qqy install --no-install-recommends                             \
+apt-get -qqy install --no-install-recommends \
   wget curl git vim jq mc net-tools less ca-certificates build-essential
 echo 'Downloading JDK ...'
 wget --no-check-certificate --no-cookies                         \
