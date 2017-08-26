@@ -1,4 +1,6 @@
 echo "123.123.123.123 dbserver" >> /etc/hosts
+cd /opt/DockerSparkNotebook
+nc -w 1 -z github.com 80 &>/dev/null && git pull
 cd /opt/docker/notebooks
 rm -rf *
 cp /opt/DockerSparkNotebook/notebooks/*.snb.ipynb .
