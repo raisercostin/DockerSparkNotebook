@@ -14,6 +14,8 @@ tar -xf /opt/jdk.tgz -C /opt
 rm /opt/jdk.tgz
 mv /opt/jdk* /opt/jdk
 mkdir /jars
+echo 'Downloading json4s-native ...'
+wget -qO /jars/json4s-native.jar https://dserban.github.io/jars/json4s-native.jar
 echo 'Downloading opennlp-tools ...'
 wget -qO /jars/opennlp-tools.jar https://dserban.github.io/jars/opennlp-tools.jar
 echo 'Downloading graphframes ...'
