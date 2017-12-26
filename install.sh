@@ -32,7 +32,7 @@ echo 'Downloading DockerSparkNotebook/SparkDatasets ...'
 cd /jars/unpacked
 for fjar in /jars/*.jar
 do
-  jar -xf ${fjar}
+  /opt/jdk/bin/jar -xf ${fjar}
 done
 cd /opt
 git clone https://github.com/dserban/DockerSparkNotebook
