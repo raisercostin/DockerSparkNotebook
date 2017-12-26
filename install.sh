@@ -8,7 +8,7 @@ echo 'Downloading JDK ...'
 wget --no-check-certificate --no-cookies                         \
      --header "Cookie: oraclelicense=accept-securebackup-cookie" \
      -qO /opt/jdk.tgz                                            \
-         http://download.oracle.com/otn-pub/java/jdk/8u144-b01/090f390dda5b47b9b721c7dfaa008135/jdk-8u144-linux-x64.tar.gz
+         http://download.oracle.com/otn-pub/java/jdk/8u152-b16/aa0333dd3019491ca4f6ddbe78cdb6d0/jdk-8u152-linux-x64.tar.gz
 echo 'Extracting JDK ...'
 tar -xf /opt/jdk.tgz -C /opt
 rm /opt/jdk.tgz
