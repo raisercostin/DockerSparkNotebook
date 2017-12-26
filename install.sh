@@ -13,7 +13,7 @@ echo 'Extracting JDK ...'
 tar -xf /opt/jdk.tgz -C /opt
 rm /opt/jdk.tgz
 mv /opt/jdk* /opt/jdk
-mkdir /jars
+mkdir -p /jars/unpacked
 echo 'Downloading spark-sql-kafka ...'
 wget -qO /jars/spark-sql-kafka.jar https://dserban.github.io/jars/spark-sql-kafka.jar
 echo 'Downloading spark-xml ...'
@@ -29,6 +29,11 @@ wget -qO /jars/spark-cassandra-connector.jar https://dserban.github.io/jars/spar
 echo 'Downloading jsr166e ...'
 wget -qO /jars/jsr166e.jar https://dserban.github.io/jars/jsr166e.jar
 echo 'Downloading DockerSparkNotebook/SparkDatasets ...'
+cd /jars/unpacked
+for fjar in /jars/*.jar
+do
+  jar -xf ${fjar}
+done
 cd /opt
 git clone https://github.com/dserban/DockerSparkNotebook
 git clone https://github.com/dserban/SparkDatasets
