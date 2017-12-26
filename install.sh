@@ -14,6 +14,10 @@ tar -xf /opt/jdk.tgz -C /opt
 rm /opt/jdk.tgz
 mv /opt/jdk* /opt/jdk
 mkdir /jars
+echo 'Downloading spark-sql-kafka ...'
+wget -qO /jars/spark-sql-kafka.jar https://dserban.github.io/jars/spark-sql-kafka.jar
+echo 'Downloading spark-xml ...'
+wget -qO /jars/spark-xml.jar https://dserban.github.io/jars/spark-xml.jar
 echo 'Downloading json4s-native ...'
 wget -qO /jars/json4s-native.jar https://dserban.github.io/jars/json4s-native.jar
 echo 'Downloading opennlp-tools ...'
