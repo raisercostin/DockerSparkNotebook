@@ -16,6 +16,8 @@ mv /opt/jdk* /opt/jdk
 mkdir -p /jars/unpacked
 echo 'Downloading spark-sql-kafka ...'
 wget -qO /jars/spark-sql-kafka.jar https://dserban.github.io/jars/spark-sql-kafka.jar
+echo 'Downloading kafka-clients ...'
+wget -qO /jars/kafka-clients.jar https://dserban.github.io/jars/kafka-clients.jar
 echo 'Downloading spark-xml ...'
 wget -qO /jars/spark-xml.jar https://dserban.github.io/jars/spark-xml.jar
 echo 'Downloading json4s-native ...'
