@@ -24,17 +24,19 @@ echo 'Downloading opennlp-tools ...'
 wget -qO /jars/opennlp-tools.jar https://dserban.github.io/jars/opennlp-tools.jar
 echo 'Downloading graphframes ...'
 wget -qO /jars/graphframes.jar https://dserban.github.io/jars/graphframes.jar
-echo 'Downloading Spark-Cassandra Connector ...'
+echo 'Downloading spark-cassandra-connector ...'
 wget -qO /jars/spark-cassandra-connector.jar https://dserban.github.io/jars/spark-cassandra-connector.jar
 echo 'Downloading jsr166e ...'
 wget -qO /jars/jsr166e.jar https://dserban.github.io/jars/jsr166e.jar
-echo 'Downloading DockerSparkNotebook/SparkDatasets ...'
+echo 'Unpacking JAR files ...'
 cd /jars/unpacked
 for fjar in /jars/*.jar
 do
   /opt/jdk/bin/jar -xf ${fjar}
 done
 cd /opt
+echo 'git clone https://github.com/dserban/DockerSparkNotebook ...'
 git clone https://github.com/dserban/DockerSparkNotebook
+echo 'git clone https://github.com/dserban/SparkDatasets ...'
 git clone https://github.com/dserban/SparkDatasets
 echo 'Building container, this may take a while ...'
