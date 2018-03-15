@@ -6,7 +6,7 @@ apt-get -qqy install --no-install-recommends \
   wget curl git vim jq mc net-tools less ca-certificates netcat-traditional build-essential
 echo 'Downloading JDK ...'
 wget -qO /opt/jdk.tgz \
-         http://cdn.azul.com/zulu/bin/zulu8.25.0.1-jdk8.0.152-linux_x64.tar.gz
+         https://cdn.azul.com/zulu/bin/zulu8.28.0.1-jdk8.0.163-linux_x64.tar.gz
 echo 'Extracting JDK ...'
 tar -xf /opt/jdk.tgz -C /opt
 rm /opt/jdk.tgz
