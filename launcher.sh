@@ -1,4 +1,6 @@
 echo "444.444.444.444 dbserver" >> /etc/hosts
+cd /opt/SparkDatasets
+nc -w 1 -z github.com 80 &>/dev/null && git pull
 cd /opt/DockerSparkNotebook
 nc -w 1 -z github.com 80 &>/dev/null && git pull
 cd /opt/docker/notebooks
