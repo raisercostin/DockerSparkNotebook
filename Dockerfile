@@ -6,8 +6,9 @@ COPY launcher.sh /usr/bin/launcher.sh
 
 RUN chmod +x /usr/bin/*.sh && bash install.sh
 
-ENV JAVA_HOME=/opt/jdk \
-    PATH=/opt/jdk/bin:$PATH
+ENV JAVA_HOME=/opt/jdk      \
+    PATH=/opt/jdk/bin:$PATH \
+    TERM=linux
 
 ENTRYPOINT ["/bin/bash", "-c"]
 
